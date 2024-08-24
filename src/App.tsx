@@ -1,25 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { Button, ConfigProvider } from "antd";
+import { BrowserRouter } from "react-router-dom";
+import RouterConfig from "./navigation/RouterConfig";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn Reacttest
-        </a>
-      </header>
-    </div>
+    <ConfigProvider
+      theme={{
+        token: {
+          // Seed Token
+          colorPrimary: "#531dab",
+          borderRadius: 7,
+
+          // Alias Token
+          colorBgContainer: "#fefefe",
+        },
+      }}
+    >
+      <BrowserRouter>
+        <div className="background">
+          <RouterConfig />
+        </div>
+        {/* <div className="App">
+          <header className="App-header">
+            <img src={"logo.png"} className="App-logo" alt="logo" />
+          </header>
+        </div> */}
+      </BrowserRouter>
+    </ConfigProvider>
   );
 }
 
