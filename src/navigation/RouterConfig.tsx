@@ -1,7 +1,18 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import AuthCommonRoute from "./AuthCommonRoute";
-import { ROUTE_ADDNEWCUSTOMERPAGE, ROUTE_ADDUSERPAGE, ROUTE_FREIGHTAGENTSPAGE, ROUTE_HOMEPAGE, ROUTE_LOGIN, ROUTE_NEWORDERPAGE, ROUTE_OUTFITTERSPHPAGE, ROUTE_REGISTER, ROUTE_REPORTSMENUPAGE, ROUTE_SEARCHPAGE } from "./routes";
+import {
+  ROUTE_ADDNEWCUSTOMERPAGE,
+  ROUTE_ADDUSERPAGE,
+  ROUTE_FREIGHTAGENTSPAGE,
+  ROUTE_HOMEPAGE,
+  ROUTE_LOGIN,
+  ROUTE_NEWORDERPAGE,
+  ROUTE_OUTFITTERSPHPAGE,
+  ROUTE_REGISTER,
+  ROUTE_REPORTSMENUPAGE,
+  ROUTE_SEARCHPAGE,
+} from "./routes";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import HomePage from "../pages/HomePage";
