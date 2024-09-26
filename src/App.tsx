@@ -2,6 +2,8 @@ import "./App.css";
 import { Button, ConfigProvider } from "antd";
 import { BrowserRouter } from "react-router-dom";
 import RouterConfig from "./navigation/RouterConfig";
+import { AppProvider } from "./context/AppContext";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
@@ -17,16 +19,13 @@ function App() {
         },
       }}
     >
-      <BrowserRouter>
-        <div className="background">
-          <RouterConfig />
-        </div>
-        {/* <div className="App">
-          <header className="App-header">
-            <img src={"logo.png"} className="App-logo" alt="logo" />
-          </header>
-        </div> */}
-      </BrowserRouter>
+      <AppProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <RouterConfig />
+          </BrowserRouter>
+        </AuthProvider>
+      </AppProvider>
     </ConfigProvider>
   );
 }

@@ -3,7 +3,7 @@ import React from "react";
 const AuthFooter = () => {
   return (
     <div style={{ color: "red", textAlign: "center" }}>
-      All rights depends on NUNO © {new Date().getFullYear()}
+      All rights depends on Savuti Taxidermy © {new Date().getFullYear()}
     </div>
   );
 };

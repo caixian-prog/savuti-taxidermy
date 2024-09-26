@@ -1,32 +1,98 @@
+html,
+body,
+#root,
 .App {
+  height: 100%;
+}
+
+.site-layout-content {
+  min-height: 100%;
+  padding: 24px;
+  background: #f0f2f5;
+}
+/* LoadingPage.css */
+.loading-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: #f5f5f5; /* Customize background color */
+}
+
+.loading-content {
   text-align: center;
 }
 
-.App-logo {
-  pointer-events: none;
+.loading-logo {
+  width: 150px; /* Adjust size as needed */
+  height: auto;
+  animation: breath 2s infinite ease-in-out;
+  margin: auto;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+@keyframes breath {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1); /* Slightly enlarge the logo */
+  }
+  100% {
+    transform: scale(1);
   }
 }
 
-.background {
-  background-color: #1e1e1e;
-  min-height: 100vh;
+.loading-text {
+  margin-top: 20px;
+  font-size: 20px;
+  color: #555; /* Softer text color */
+  font-family: "Arial", sans-serif; /* You can choose a custom font */
+  letter-spacing: 1px; /* Slightly space out the letters */
+  font-weight: 500; /* Medium weight for the text */
+  text-transform: uppercase; /* Makes the text look more defined */
+  animation: fade 2s infinite ease-in-out;
 }
 
-.App-link {
-  color: #61dafb;
+@keyframes fade {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(360deg);
-  }
+.custom-button {
+  cursor: pointer;
+  opacity: 1;
+  user-select: none;
+}
+.custom-button:hover {
+  opacity: 0.8;
+}
 
-  to {
-    transform: rotate(0deg);
-  }
+.custom-backtop {
+  height: 40px;
+  width: 40px;
+  background-color: #717171;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Adding transition for background and transform */
+}
+
+.custom-backtop:hover {
+  background-color: #3c3c3c; /* Change to a different color on hover */
+  transform: scale(1.1); /* Slightly increase size on hover */
+}
+
+.custom-backtop:hover .anticon {
+  color: #fff; /* Ensure icon color remains white */
+}
+.ant-float-btn-body {
+  background-color: transparent !important;
 }

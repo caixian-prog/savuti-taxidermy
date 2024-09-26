@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+/* body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -18,4 +18,26 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+} */
+
+/* Sidebar (Sider) background */
+.custom-sider {
+  background-color: #1e1e1e !important;
+}
+
+/* Menu item background and text color */
+.custom-menu .ant-menu-item {
+  background-color: #1e1e1e !important;
+  color: #ffffff !important; /* Change this to the color you want for text */
+}
+
+.custom-menu .ant-menu-item:hover {
+  background-color: #333333 !important; /* Optional: Menu item hover effect */
+  color: #ffffff !important;
+}
+
+/* Active menu item color */
+.custom-menu .ant-menu-item-selected {
+  background-color: #fefefe !important; /* Optional: Active background color */
+  color: #531dab !important; /* Change this to the desired active text color */
 }
