@@ -24,6 +24,7 @@ const ReportsMenuPage: React.FC = () => {
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
   const [data, setData] = useState<any>({
+    total_orders: [],
     completed_orders: [],
     outstanding_orders: [],
     incompleted_orders: [],
@@ -46,7 +47,7 @@ const ReportsMenuPage: React.FC = () => {
     apiGetReport(startDate, endDate)
       .then((res) => {
         setData(res);
-        console.log({ res });
+        // console.log({ res });
       })
       .catch((err) => {});
   }, []);
@@ -136,31 +137,31 @@ const ReportsMenuPage: React.FC = () => {
     },
     {
       key: "6",
-      label:
-        "List of capes for each specie (" + data["list_capes"].length + ")",
+      label: "List of Capes",
       children: (
         <div>
           <CapeNotFinishWidget
             start={startDate}
             end={endDate}
             data={data["list_capes"]}
+            total_orders={data["total_orders"]}
           />
         </div>
       ),
     },
-    {
-      key: "7",
-      label: "List all capes (" + data["list_all_capes"].length + ")",
-      children: (
-        <div>
-          <CapeAllWidget
-            start={startDate}
-            end={endDate}
-            data={data["list_all_capes"]}
-          />
-        </div>
-      ),
-    },
+    // {
+    //   key: "7",
+    //   label: "List all capes (" + data["list_all_capes"].length + ")",
+    //   children: (
+    //     <div>
+    //       <CapeAllWidget
+    //         start={startDate}
+    //         end={endDate}
+    //         data={data["list_all_capes"]}
+    //       />
+    //     </div>
+    //   ),
+    // },
   ];
 
   return (

@@ -2,6 +2,8 @@ import React, { FC, useEffect, useState } from "react";
 import { Table, Input, Button, Select, DatePicker, Popconfirm } from "antd";
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
 import {
+  apiAddRecvItem,
+  apiAddSpecie,
   apiDeleteOrderItem,
   apiGenerateItemId,
   apiGetRecvItemList,
@@ -10,6 +12,7 @@ import {
 import dayjs from "dayjs";
 import { dateFormat } from "../../../config/constants";
 import { IBriefOrderInfo, IOrderItemInfo } from "../../../config/interfaces";
+import { useAppContext } from "../../../context/AppContext";
 const { Option } = Select;
 
 interface PROPS {
@@ -26,15 +29,16 @@ const OrderItemWidget: FC<PROPS> = ({
   setOrderInfo,
   setItemList,
 }) => {
+  const { showToast } = useAppContext();
   // const [dataSource, setDataSource] = useState<IOrderItemInfo[]>([]);
   const [specieList, setSpecieList] = useState<string[]>([]);
   const [recvItemList, setRecvItemList] = useState<string[]>([]);
   useEffect(() => {
     apiGetSpecieList().then((res) => {
-      setSpecieList(res as string[]);
+      setSpecieList((res as string[]).filter((x) => x != null));
     });
     apiGetRecvItemList().then((res) => {
-      setRecvItemList(res as string[]);
+      setRecvItemList((res as string[]).filter((x) => x != null));
     });
   }, []);
 
@@ -95,10 +99,31 @@ const OrderItemWidget: FC<PROPS> = ({
       render: (text: string, record: IOrderItemInfo) => (
         <Select
           value={text}
-          onChange={(value) => handleSelectChange(record.id, "specie", value)}
+          onChange={(value) => {
+            if (value === "add_more") {
+              const newSpecie = prompt("Enter new specie:");
+              if (newSpecie) {
+                if (specieList.includes(newSpecie)) {
+                  handleSelectChange(record.id, "specie", newSpecie);
+                  showToast("Error!", "Same specie exists!", "error");
+                  return;
+                }
+
+                setSpecieList([...specieList, newSpecie]);
+                handleSelectChange(record.id, "specie", newSpecie);
+                apiAddSpecie(newSpecie);
+              }
+            } else {
+              handleSelectChange(record.id, "specie", value);
+            }
+          }}
           className="w-full min-w-[150px]"
           placeholder="Select Specie"
         >
+          <Option key="add_more" value="add_more">
+            + Add more
+          </Option>
+
           {specieList.map((specie) => (
             <Option key={specie} value={specie}>
               {specie}
@@ -114,10 +139,33 @@ const OrderItemWidget: FC<PROPS> = ({
       render: (text: string, record: IOrderItemInfo) => (
         <Select
           value={text}
-          onChange={(value) => handleSelectChange(record.id, "item_name", value)}
+          onChange={(value) => {
+            if (value === "add_more") {
+              const newItem = prompt("Enter new item:");
+              if (newItem) {
+                if (recvItemList.includes(newItem)) {
+                  handleSelectChange(record.id, "item_name", newItem);
+                  showToast("Error!", "Same item exists!", "error");
+                  return;
+                }
+                setRecvItemList([...recvItemList, newItem]);
+                handleSelectChange(record.id, "item_name", newItem);
+                apiAddRecvItem(newItem)
+                  .then()
+                  .catch((err) => {
+                    showToast("Error!", err, "error");
+                  });
+              }
+            } else {
+              handleSelectChange(record.id, "item_name", value);
+            }
+          }}
           className="w-full min-w-[150px]"
           placeholder="Select Item"
         >
+          <Option key="add_more" value="add_more">
+            + Add more
+          </Option>
           {recvItemList.map((item) => (
             <Option key={item} value={item}>
               {item}
@@ -134,6 +182,20 @@ const OrderItemWidget: FC<PROPS> = ({
       //     placeholder="Enter items"
       //   />
       // ),
+    },
+    {
+      title: "Horns (inches)",
+      dataIndex: "item_size",
+      key: "item_size",
+      render: (text: string, record: IOrderItemInfo) => (
+        <Input
+          value={text}
+          onChange={(e) =>
+            handleSelectChange(record.id, "item_size", e.target.value)
+          }
+          placeholder="Enter Horns (inches)"
+        />
+      ),
     },
     {
       title: "Instruction",
@@ -159,7 +221,6 @@ const OrderItemWidget: FC<PROPS> = ({
           prefix={orderInfo.currency}
           required={true}
           value={text}
-          
           onChange={(e) =>
             handleSelectChange(record.id, "price", e.target.value)
           }

@@ -85,7 +85,7 @@ export const apiCreatePdf = (order_id: string, send: number) => {
 export const apiGetRecvItemList = () => {
   return axiosGet(urlGetRecvItemList, {}, ENDPOINT_ERROR);
 };
-export const apiAddRecvITem = (name: string) => {
+export const apiAddRecvItem = (name: string) => {
   return axiosGet(urlAddRecvItem, { name: name }, ENDPOINT_ERROR);
 };
 

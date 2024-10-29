@@ -45,9 +45,10 @@ const OrderListWidget: FC<PROPS> = ({ dataList = [] }) => {
 
   const columns: TableColumnsType<DataType> = [
     {
-      title: "Id",
+      title: "Order ID",
       dataIndex: "id",
       key: "id",
+      render: (item) => item.toUpperCase(),
     },
     {
       title: "Customer Name",
