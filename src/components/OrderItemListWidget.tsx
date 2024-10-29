@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ROUTE_ORDERDETAILPAGE } from "../navigation/routes";
 import { Table, TableColumnsType } from "antd";
 import { EditOutlined } from "@ant-design/icons";
+import PrintableTable from "./PrintableTable";
 
 interface PROPS {
   dataList: any[];
@@ -119,7 +120,8 @@ const OrderItemListWidget: FC<PROPS> = ({ dataList = [] }) => {
   ];
   return (
     <div>
-      <Table columns={columns} dataSource={data} />
+      <PrintableTable columns={columns} dataSource={data} />
+
     </div>
   );
 };

@@ -13,6 +13,7 @@ import FlatskinNotPaidWidget from "./widgets/FlatskinNotPaidWidget";
 import CapeNotFinishWidget from "./widgets/CapeNotFinishWidget";
 import CapeAllWidget from "./widgets/CapeAllWidget";
 import { apiGetReport } from "../../services/reportService";
+import CustomerAllWidget from "./widgets/CustomerAllWidget";
 
 const { RangePicker } = DatePicker;
 
@@ -30,6 +31,7 @@ const ReportsMenuPage: React.FC = () => {
     not_paid_flatskin: [],
     list_capes: [],
     list_all_capes: [],
+    list_all_customers: [],
   });
 
   const onDateChange = (
@@ -44,13 +46,26 @@ const ReportsMenuPage: React.FC = () => {
     apiGetReport(startDate, endDate)
       .then((res) => {
         setData(res);
+        console.log({ res });
       })
       .catch((err) => {});
   }, []);
 
-  console.log(data);
-
   const items: CollapseProps["items"] = [
+    {
+      key: "8",
+      label:
+        "List all export customers (" + data["list_all_customers"].length + ")",
+      children: (
+        <div>
+          <CustomerAllWidget
+            start={startDate}
+            end={endDate}
+            data={data["list_all_customers"]}
+          />
+        </div>
+      ),
+    },
     {
       key: "1",
       label: "Completed orders (" + data["completed_orders"].length + ")",

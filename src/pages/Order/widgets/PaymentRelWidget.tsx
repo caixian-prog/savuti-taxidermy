@@ -25,15 +25,16 @@ const PaymentRelWidget: FC<PROPS> = ({
     (a: number, b: IOrderItemInfo) => a + b.price,
     0
   );
-  const vat = (subTotal / 100) * 15;
-  const total = subTotal + vat;
+  // const vat = (subTotal / 100) * 15;
+  const vat = 0;
+  const total = parseFloat(`${subTotal}`) + parseFloat(`${vat}`);
   const outstanding =
     orderInfo.deposit_amount - total + parseFloat(`${orderInfo.discount}`);
   useEffect(() => {
-    console.log("outstanding:", outstanding);
+    // console.log("outstanding:", outstanding);
     setOrderInfo("outstanding", outstanding);
   }, [itemList, orderInfo.deposit_amount, orderInfo.discount]);
-  console.log(orderInfo.deposit_amount - total, outstanding);
+  // console.log(orderInfo.deposit_amount - total, outstanding);
   return (
     <div>
       <Row gutter={5} justify={"space-between"}>
@@ -68,9 +69,7 @@ const PaymentRelWidget: FC<PROPS> = ({
                 className="w-[120px]"
                 type="number"
                 value={orderInfo.deposit_amount}
-                onChange={(e) =>
-                  setOrderInfo("deposit_amount", parseFloat(e.target.value))
-                }
+                onChange={(e) => setOrderInfo("deposit_amount", e.target.value)}
               />
             </Col>
           </Row>
@@ -81,7 +80,7 @@ const PaymentRelWidget: FC<PROPS> = ({
                 prefix={orderInfo.currency}
                 className="w-[120px]"
                 type="number"
-                value={outstanding}
+                value={outstanding.toFixed(2)}
                 disabled
               />
             </Col>
@@ -99,8 +98,11 @@ const PaymentRelWidget: FC<PROPS> = ({
               />
             </Col>
           </Row>
-          <Row align={"middle"}>
-            <Col xs={14}>15% VAT</Col>
+          <Row align={"middle"} className="my-1">
+            <Col xs={14}></Col>
+            <Col xs={10}>VAT(15%) applied</Col>
+
+            {/* <Col xs={14}>15% VAT</Col>
             <Col xs={10}>
               <Input
                 type="number"
@@ -108,7 +110,7 @@ const PaymentRelWidget: FC<PROPS> = ({
                 prefix={orderInfo.currency}
                 value={vat}
               />
-            </Col>
+            </Col> */}
           </Row>
           <Row align={"middle"}>
             <Col xs={14}>Total</Col>
@@ -128,9 +130,7 @@ const PaymentRelWidget: FC<PROPS> = ({
                 prefix={orderInfo.currency}
                 value={orderInfo.discount}
                 type="number"
-                onChange={(e) =>
-                  setOrderInfo("discount", parseFloat(e.target.value))
-                }
+                onChange={(e) => setOrderInfo("discount", e.target.value)}
               />
             </Col>
 

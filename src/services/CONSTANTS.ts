@@ -45,8 +45,12 @@ export const urlDeleteOrderItem = BASE_URL + "/api/order/delete_item";
 
 export const urlGetSpecieList = BASE_URL + "/api/order/get_species";
 export const urlAddSpecie = BASE_URL + "/api/order/add_specie";
+export const urlGetRecvItemList = BASE_URL + "/api/order/get_receive_item";
+export const urlAddRecvItem = BASE_URL + "/api/order/add_receive_item";
 
 export const urlCreatePdf = BASE_URL + "/api/order/create_pdf";
+export const urlUploadOrder = BASE_URL + "/api/order/upload_order_file";
+export const urlDeleteOrderFile = BASE_URL + "/api/order/delete_order_file";
 
 // search order apis
 export const urlSearchOrders = BASE_URL + "/api/order/search";

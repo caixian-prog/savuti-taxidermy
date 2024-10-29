@@ -21,7 +21,7 @@ export const axiosPost = (
           }
         })
         .catch((err: any) => {
-          reject(err);
+          reject(err.message);
         });
     } catch (error) {
       console.error(errorMessage, error);
@@ -44,7 +44,7 @@ export const axiosGet = (url: string, param: any, errorMessage = "") => {
           }
         })
         .catch((err: any) => {
-          reject(err);
+          reject(err.message);
         });
     } catch (error) {
       console.error(errorMessage, error);
@@ -76,7 +76,7 @@ export const axiosFormPost = (
           }
         })
         .catch((err: any) => {
-          reject(err);
+          reject(err.message);
         });
     } catch (error) {
       reject(SYSTEM_ERROR);

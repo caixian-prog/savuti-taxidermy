@@ -72,7 +72,7 @@ const OrderListPage: React.FC = () => {
 
   const columns: TableColumnsType<DataType> = [
     {
-      title: "Id",
+      title: "Order ID",
       dataIndex: "id",
       key: "id",
       //   width: "5%",
@@ -110,6 +110,10 @@ const OrderListPage: React.FC = () => {
       title: "Status",
       dataIndex: "type",
       key: "type",
+      render: (item) => {
+        if (item == 10) return "Complete";
+        return "";
+      },
       //   width: "20%",
     },
     // {

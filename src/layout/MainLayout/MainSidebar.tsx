@@ -13,7 +13,7 @@ import {
 import type { MenuProps } from "antd";
 import { ROUTE_DASHBOARD, ROUTE_HOMEPAGE } from "../../navigation/routes";
 import { useNavigate } from "react-router-dom";
-import { menuItems } from "../../config/constants";
+import { menuItems, SITE_BASE } from "../../config/constants";
 
 const { Header, Content, Footer, Sider } = Layout;
 const siderStyle: React.CSSProperties = {
@@ -54,7 +54,7 @@ const MainSidebar: React.FC<SiderProps> = ({ pathname }) => {
     >
       <div className="pb-7">
         <img
-          src="/logo192.png"
+          src={`${SITE_BASE}/logo192.png`}
           className="w-[80px] h-[80px] mt-7 m-auto cursor-pointer"
           onClick={() => {
             navigate(ROUTE_HOMEPAGE);

@@ -32,7 +32,7 @@ export interface IOutfitterInfo {
   id?: number;
   name: string;
   surname?: string;
-  company_name?: string;
+  company_name: string;
   mobile_number?: string;
   landline_number?: string;
   email: string;
@@ -77,6 +77,8 @@ export interface IBriefOrderInfo {
   agent_name?: string;
   outfitter_id?: number;
   outfitter_name?: string;
+  order_files: string;
+  new_id?: string;
 }
 export interface IOrderItemInfo {
   id: number;

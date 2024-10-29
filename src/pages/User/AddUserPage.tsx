@@ -66,7 +66,8 @@ const AddUserPage: React.FC = () => {
               type="text"
               size="large"
               onClick={() => {
-                navigate(ROUTE_USERLISTPAGE);
+                // navigate(ROUTE_USERLISTPAGE);
+                navigate(-1);
               }}
             >
               <BackwardOutlined /> Back

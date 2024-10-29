@@ -1,11 +1,13 @@
 // import { LoadingIcon } from "@/components/icons";
 // import logo from "../assets/images/logo-unit.jpg";
 import { FC } from "react";
+import { SITE_BASE } from "../../config/constants";
 interface PROPS {
   part?: boolean;
 }
 export const Loading: FC<PROPS> = ({ part }) => {
-  const logo = "/logo192.png";
+  const logo = `${SITE_BASE}/logo192.png`;
+
   return (
     <div className="loading-page">
       <div className="loading-content">

@@ -21,7 +21,7 @@ import {
 const AddOutfittersPHPage: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [outfitterType, setOutfitterType] = useState(0);
+  const [outfitterType, setOutfitterType] = useState(1);
   const [outfitterInfo, setOutfitterInfo] = useState<IOutfitterInfo>();
   const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useAppContext();
@@ -32,7 +32,7 @@ const AddOutfittersPHPage: React.FC = () => {
     apiGetOutfitterById(parseInt(id))
       .then((res) => {
         setOutfitterInfo(res as IOutfitterInfo);
-        setOutfitterType((res as IOutfitterInfo).type);
+        setOutfitterType(Number((res as IOutfitterInfo).type));
         setIsLoading(false);
       })
       .catch((err) => {
@@ -83,7 +83,8 @@ const AddOutfittersPHPage: React.FC = () => {
               type="text"
               size="large"
               onClick={() => {
-                navigate(ROUTE_OUTFITTERSLISTPAGE);
+                // navigate(ROUTE_OUTFITTERSLISTPAGE);
+                navigate(-1);
               }}
             >
               <BackwardOutlined /> Back

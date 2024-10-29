@@ -79,3 +79,4 @@ export const menuItems = [
 
 export const dateFormat = 'YYYY-MM-DD';
 export const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
+export const SITE_BASE = "/admin";

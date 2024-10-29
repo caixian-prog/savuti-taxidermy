@@ -1,6 +1,11 @@
 import { IBriefOrderInfo, IOrderItemInfo } from "../config/interfaces";
 import { USERTYPE } from "../config/types";
-import { axiosGet, axiosPost, ENDPOINT_ERROR } from "./ajaxService";
+import {
+  axiosFormPost,
+  axiosGet,
+  axiosPost,
+  ENDPOINT_ERROR,
+} from "./ajaxService";
 import {
   urlGetOrderList,
   urlGetOrderById,
@@ -13,6 +18,10 @@ import {
   urlGetSpecieList,
   urlAddSpecie,
   urlCreatePdf,
+  urlGetRecvItemList,
+  urlAddRecvItem,
+  urlUploadOrder,
+  urlDeleteOrderFile,
 } from "./CONSTANTS";
 
 export const apiGetOrderList = () => {
@@ -42,7 +51,7 @@ export const apiUpdateOrder = (
     ...orderInfo,
     order_items: [...itemsInfo],
   };
-  
+
   return axiosPost(urlUpdateOrder, param, ENDPOINT_ERROR);
 };
 export const apiGenerateItemId = (order_id: any) => {
@@ -65,6 +74,30 @@ export const apiAddSpecie = (name: string) => {
   return axiosPost(urlAddSpecie, { name: name }, ENDPOINT_ERROR);
 };
 
-export const apiCreatePdf = (order_id: string, send: number)=>{
-  return axiosGet(urlCreatePdf, {order_id:order_id, send: send}, ENDPOINT_ERROR)
-}
+export const apiCreatePdf = (order_id: string, send: number) => {
+  return axiosGet(
+    urlCreatePdf,
+    { order_id: order_id, send: send },
+    ENDPOINT_ERROR
+  );
+};
+
+export const apiGetRecvItemList = () => {
+  return axiosGet(urlGetRecvItemList, {}, ENDPOINT_ERROR);
+};
+export const apiAddRecvITem = (name: string) => {
+  return axiosGet(urlAddRecvItem, { name: name }, ENDPOINT_ERROR);
+};
+
+export const apiUploadOrder = (order_id: string, file: File) => {
+  var formData = new FormData();
+  formData.append("order_id", order_id);
+  formData.append("orderFile", file);
+  return axiosFormPost(urlUploadOrder, formData);
+};
+export const apiDeleteOrderFile = (order_id: string, filename: string) => {
+  return axiosPost(urlDeleteOrderFile, {
+    order_id: order_id,
+    filename: filename,
+  });
+};

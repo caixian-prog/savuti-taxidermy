@@ -27,7 +27,7 @@ interface DataType {
   id?: number;
   name: string;
   surname?: string;
-  company_name?: string;
+  company_name: string;
   mobile_number?: string;
   landline_number?: string;
   email: string;
@@ -82,15 +82,19 @@ const OutfittersPHListPage: React.FC = () => {
     },
     {
       title: "Name",
-      dataIndex: "name",
-      key: "name",
-      sorter: (a: DataType, b: DataType) => a.name.localeCompare(b.name),
+      dataIndex: "company_name",
+      key: "company_name",
+      sorter: (a: DataType, b: DataType) =>
+        a.company_name.localeCompare(b.company_name),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Surname",
+      title: "Contact",
       dataIndex: "surname",
       key: "surname",
+      render: (item, data) => {
+        return data["name"] + " " + data["surname"];
+      },
     },
     {
       title: "Email",

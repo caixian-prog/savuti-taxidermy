@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import RouterConfig from "./navigation/RouterConfig";
 import { AppProvider } from "./context/AppContext";
 import { AuthProvider } from "./context/AuthContext";
+import { SITE_BASE } from "./config/constants";
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
     >
       <AppProvider>
         <AuthProvider>
-          <BrowserRouter>
+          <BrowserRouter basename={SITE_BASE}>
             <RouterConfig />
           </BrowserRouter>
         </AuthProvider>

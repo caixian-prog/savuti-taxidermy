@@ -76,7 +76,8 @@ const AddFreightAgentPage: React.FC = () => {
               type="text"
               size="large"
               onClick={() => {
-                navigate(ROUTE_FREIGHTAGENTLISTPAGE);
+                // navigate(ROUTE_FREIGHTAGENTLISTPAGE);
+                navigate(-1);
               }}
             >
               <BackwardOutlined /> Back

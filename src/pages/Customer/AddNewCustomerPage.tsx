@@ -7,7 +7,7 @@ import {
   TruckOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Form, Input, Radio } from "antd";
+import { Button, Form, Input, Radio, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -15,42 +15,88 @@ import {
   apiGetCustomerById,
   apiUpdateCustomer,
 } from "../../services/customerService";
-import { ICustomerInfo } from "../../config/interfaces";
+import {
+  ICustomerInfo,
+  IFreightAgentInfo,
+  IOutfitterInfo,
+} from "../../config/interfaces";
 import { useAppContext } from "../../context/AppContext";
 import PageLoading from "../../components/Containers/PageLoading";
 import { ROUTE_CUSTOMER_LIST_PAGE } from "../../navigation/routes";
+import { apiGetAgents } from "../../services/agentService";
+import { apiGetOutfitters } from "../../services/outfitterService";
 
+const { Option } = Select;
 const AddNewCustomerPage: React.FC = () => {
   const navigate = useNavigate();
   const [customerType, setCustomerType] = useState(1);
   const { customerId } = useParams();
   const [customerInfo, setCustomerInfo] = useState<ICustomerInfo>();
   const [isLoading, setIsLoading] = useState(false);
+
+  const [outfitterList, setOutfitterList] = useState<IOutfitterInfo[]>([]);
+  const [phList, setPHList] = useState<IOutfitterInfo[]>([]);
+  const [agentList, setAgentList] = useState<IFreightAgentInfo[]>([]);
+
   const { showToast } = useAppContext();
   useEffect(() => {
-    if (!customerId) return;
+    // if (!customerId) return;
     setIsLoading(true);
-    apiGetCustomerById(parseInt(customerId))
-      .then((res) => {
-        setCustomerInfo(res as ICustomerInfo);
-        const _customerType = (res as ICustomerInfo).type;
-        setCustomerType(
-          parseInt(_customerType !== undefined ? _customerType.toString() : "0")
-        );
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        setIsLoading(false);
-        showToast(err, "", "error");
-        setTimeout(() => {
-          navigate(-1);
-        }, 500);
-      });
+    Promise.all([
+      new Promise<boolean>((resolve, reject) => {
+        if (!customerId) {
+          resolve(true);
+        } else {
+          apiGetCustomerById(parseInt(customerId))
+            .then((res) => {
+              setCustomerInfo(res as ICustomerInfo);
+              const _customerType = (res as ICustomerInfo).type;
+              setCustomerType(
+                parseInt(
+                  _customerType !== undefined ? _customerType.toString() : "0"
+                )
+              );
+              setTimeout(() => {
+                resolve(true);
+              }, 200);
+            })
+            .catch((err) => {
+              showToast(err, "", "error");
+              setTimeout(() => {
+                navigate(-1);
+              }, 500);
+              reject(false);
+            });
+        }
+      }),
+      new Promise<boolean>((resolve, reject) => {
+        apiGetOutfitters().then((res) => {
+          setOutfitterList(
+            (res as IOutfitterInfo[]).filter((x) => x.type == 1)
+          );
+          setPHList((res as IOutfitterInfo[]).filter((x) => x.type == 2));
+          setTimeout(() => {
+            resolve(true);
+          }, 200);
+        });
+      }),
+      new Promise<boolean>((resolve, reject) => {
+        apiGetAgents().then((res) => {
+          setAgentList(res as IFreightAgentInfo[]);
+          setTimeout(() => {
+            resolve(true);
+          }, 200);
+        });
+      }),
+    ]).then(() => {
+      setIsLoading(false);
+    });
   }, [customerId]);
 
   if (isLoading) {
     return <PageLoading />;
   }
+
   const onFinish = (values: any) => {
     if (values == undefined) return;
     let _info = !customerInfo
@@ -86,7 +132,8 @@ const AddNewCustomerPage: React.FC = () => {
             type="text"
             size="large"
             onClick={() => {
-              navigate(ROUTE_CUSTOMER_LIST_PAGE);
+              navigate(-1);
+              // navigate(ROUTE_CUSTOMER_LIST_PAGE);
             }}
           >
             <BackwardOutlined /> Back
@@ -128,12 +175,12 @@ const AddNewCustomerPage: React.FC = () => {
           <Form.Item
             name="email"
             label="Email"
-            rules={[
-              {
-                required: true,
-                message: "Please input the customer's email",
-              },
-            ]}
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: "Please input the customer's email",
+            //   },
+            // ]}
           >
             <Input
               prefix={<MailOutlined />}
@@ -180,16 +227,34 @@ const AddNewCustomerPage: React.FC = () => {
           {customerType == 2 && (
             <div>
               <Form.Item name="outfitter" label="Outfitter">
-                <Input
+                <Select className="w-[120px]">
+                  {outfitterList.map((x, index) => {
+                    return (
+                      <Option value={x.id} key={`outfitter-${x.id}`}>
+                        {x.company_name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+                {/* <Input
                   prefix={<SolutionOutlined />}
                   placeholder="Enter customer's Outfitter"
-                />
+                /> */}
               </Form.Item>
               <Form.Item name="ph" label="PH">
-                <Input
+                <Select className="w-[120px]">
+                  {phList.map((x, index) => {
+                    return (
+                      <Option value={x.id} key={`ph-${x.id}`}>
+                        {x.company_name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+                {/* <Input
                   prefix={<SolutionOutlined />}
                   placeholder="Enter customer's PH"
-                />
+                /> */}
               </Form.Item>
               <Form.Item name="residing_country" label="Residing Country">
                 <Input
@@ -198,10 +263,19 @@ const AddNewCustomerPage: React.FC = () => {
                 />
               </Form.Item>
               <Form.Item name="freight_agent" label="Freight Agent">
-                <Input
+                <Select className="w-[120px]">
+                  {agentList.map((x, index) => {
+                    return (
+                      <Option value={x.id} key={`agent-${x.id}`}>
+                        {x.name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+                {/* <Input
                   prefix={<TruckOutlined />}
                   placeholder="Enter customer's Freight Agent"
-                />
+                /> */}
               </Form.Item>
             </div>
           )}

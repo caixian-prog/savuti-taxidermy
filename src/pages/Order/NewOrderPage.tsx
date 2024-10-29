@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import OrderItemWidget from "./widgets/OrderItemWidget";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { Col, DatePicker, Row, Select, Form, Button } from "antd";
+import { Col, DatePicker, Row, Select, Form, Button, Input } from "antd";
 import dayjs from "dayjs";
 import { dateFormat } from "../../config/constants";
 import PaymentRelWidget from "./widgets/PaymentRelWidget";
@@ -21,11 +21,21 @@ import {
   apiGetOrderById,
   apiUpdateOrder,
 } from "../../services/orderService";
-import { PrinterOutlined, SendOutlined } from "@ant-design/icons";
-import { ROUTE_ORDERLISTPAGE } from "../../navigation/routes";
+import {
+  BackwardOutlined,
+  EditOutlined,
+  PrinterOutlined,
+  SaveOutlined,
+  SendOutlined,
+} from "@ant-design/icons";
+import {
+  ROUTE_ORDERDETAILPAGE,
+  ROUTE_ORDERLISTPAGE,
+} from "../../navigation/routes";
 import { apiGetAgents } from "../../services/agentService";
 import { apiGetOutfitters } from "../../services/outfitterService";
 import { USERTYPE } from "../../config/types";
+import OrderFileViewWidget from "./widgets/OrderFileViewWidget";
 
 const NewOrderPage: React.FC = () => {
   const { id } = useParams();
@@ -35,7 +45,7 @@ const NewOrderPage: React.FC = () => {
   const [customerList, setCustomerList] = useState<ICustomerInfo[]>([]);
   const [agentList, setAgentList] = useState<IFreightAgentInfo[]>([]);
   const [outfitterList, setOutfitterList] = useState<IOutfitterInfo[]>([]);
-
+  const [busy, setIsBusy] = useState(false);
   const [orderInfo, setOrderInfo] = useState<IBriefOrderInfo>({
     customer_id: 0,
     customer_name: "",
@@ -54,10 +64,12 @@ const NewOrderPage: React.FC = () => {
     is_del: 0,
     flatskin_paid: 0,
     flatskin_sent: 0,
+    order_files: "",
+    new_id: "",
   });
   const [itemList, setItemList] = useState<IOrderItemInfo[]>([]);
-
   useEffect(() => {
+    // console.log({ orderInfo });
     apiGetCustomers()
       .then((res) => {
         setCustomerList(res as ICustomerInfo[]);
@@ -65,6 +77,7 @@ const NewOrderPage: React.FC = () => {
         if (!is_new) {
           apiGetOrderById(id)
             .then((res) => {
+              console.log("ORDERINFO: ", res);
               setOrderInfo(res as IBriefOrderInfo);
             })
             .catch((err) => {
@@ -96,13 +109,13 @@ const NewOrderPage: React.FC = () => {
     apiGetOutfitters().then((res) => {
       setOutfitterList(res as IOutfitterInfo[]);
     });
-  }, []);
+  }, [id]);
 
   const customerInfo = customerList.find((x) => x.id == orderInfo.customer_id);
   const agentInfo = agentList.find((x) => x.id == orderInfo.agent_id);
   const outfitterInfo = outfitterList.find((x) => x.id == orderInfo?.id);
 
-  const onChange = (date: dayjs.Dayjs | null, dateString: any) => {
+  const onChangeOrderDate = (date: dayjs.Dayjs | null, dateString: any) => {
     if (!date) return;
     onUpdateOrderInfo(
       "order_date",
@@ -124,11 +137,16 @@ const NewOrderPage: React.FC = () => {
       if (itemList.length == 0) {
         showToast("Warning!", "Please add at least one order item", "warning");
         reject("order empty error");
+        return;
       }
       if (is_new) {
+        console.log("ORDER LIST: ", orderInfo);
         apiCreateOrder(orderInfo, itemList)
           .then((res) => {
-            resolve(res);
+            onUpdateOrderInfo("new_id", "");
+            setTimeout(() => {
+              resolve(res);
+            }, 100);
           })
           .catch((err) => {
             showToast(err, "", "error");
@@ -137,7 +155,10 @@ const NewOrderPage: React.FC = () => {
       } else {
         apiUpdateOrder(orderInfo, itemList)
           .then((res) => {
-            resolve(res);
+            onUpdateOrderInfo("new_id", "");
+            setTimeout(() => {
+              resolve(res);
+            }, 100);
           })
           .catch((err) => {
             showToast(err, "", "error");
@@ -146,36 +167,82 @@ const NewOrderPage: React.FC = () => {
       }
     });
   };
-
-  const onClickSendCustomer = () => {
-    manageOrder()
-      .then((res) => {
-        apiCreatePdf(res["order_id"], 1).then((res) => {
-          showToast("Successfully sent to the customer");
+  const onClickSave = () => {
+    try {
+      setIsBusy(true);
+      manageOrder()
+        .then((res) => {
+          setIsBusy(false);
+          showToast("Successfully saved");
           navigate(ROUTE_ORDERLISTPAGE);
+        })
+        .catch((err) => {
+          setIsBusy(false);
+          console.log(err);
         });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    } catch (err) {
+      setIsBusy(false);
+    }
+  };
+  const onClickSendCustomer = () => {
+    try {
+      setIsBusy(true);
+      manageOrder()
+        .then((res) => {
+          apiCreatePdf(res["order_id"], 1).then((res) => {
+            setIsBusy(false);
+            showToast("Successfully sent to the customer");
+            navigate(ROUTE_ORDERLISTPAGE);
+          });
+        })
+        .catch((err) => {
+          setIsBusy(false);
+          console.log(err);
+        });
+    } catch (err) {
+      setIsBusy(false);
+    }
   };
   const onClickCopyOrder = () => {
-    manageOrder()
-      .then((res) => {
-        apiCreatePdf(res["order_id"], 0).then((res) => {
-          window.open(res as string, "_blank");
+    try {
+      setIsBusy(true);
+      manageOrder()
+        .then((res) => {
+          apiCreatePdf(res["order_id"], 0).then((pdf_res) => {
+            // onUpdateOrderInfo("id", res["order_id"]);
+            navigate(ROUTE_ORDERDETAILPAGE + "/" + res["order_id"]);
+            setIsBusy(false);
+            window.open(pdf_res as string, "_blank");
+          });
+        })
+        .catch((err) => {
+          console.log("error: ", err);
+          setIsBusy(false);
         });
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    } catch (err) {
+      setIsBusy(false);
+    }
   };
+
   return (
     <div>
+      <div>
+        <Button
+          type="text"
+          size="large"
+          onClick={() => {
+            // navigate(ROUTE_ORDERLISTPAGE);
+            navigate(-1);
+          }}
+        >
+          <BackwardOutlined /> Back
+        </Button>
+      </div>
+
       <div className="text-center font-bold text-3xl">
         {is_new ? "New Order" : "Order information"}
       </div>
+
       <Form>
         <div className="mt-[20px] mb-[10px] max-w-[1000px] m-auto">
           <Row justify={"space-between"}>
@@ -245,7 +312,7 @@ const NewOrderPage: React.FC = () => {
                       options={outfitterList.map((info) => {
                         return {
                           value: info.id,
-                          label: info.name,
+                          label: info.company_name,
                         };
                       })}
                     />
@@ -280,7 +347,7 @@ const NewOrderPage: React.FC = () => {
                   <DatePicker
                     value={dayjs(orderInfo.order_date, dateFormat)}
                     format={dateFormat}
-                    onChange={onChange}
+                    onChange={onChangeOrderDate}
                   />
                 </Form.Item>
               ) : (
@@ -291,7 +358,14 @@ const NewOrderPage: React.FC = () => {
               )}
             </Col>
             <Col>
-              Order Number: <strong>{is_new ? "Auto generate" : id}</strong>
+              Order Number:{" "}
+              <Input
+                defaultValue={is_new ? "Auto generate" : id}
+                onChange={(e) => {
+                  onUpdateOrderInfo("new_id", e.target.value);
+                }}
+              />
+              {/* <EditOutlined className="custom-button" /> */}
             </Col>
           </Row>
         </div>
@@ -317,6 +391,7 @@ const NewOrderPage: React.FC = () => {
                 type="primary"
                 htmlType="submit"
                 onClick={onClickSendCustomer}
+                loading={busy}
               >
                 <SendOutlined />
                 Send order to customer
@@ -328,7 +403,21 @@ const NewOrderPage: React.FC = () => {
               <Button
                 type="primary"
                 htmlType="submit"
+                onClick={onClickSave}
+                loading={busy}
+              >
+                <SaveOutlined />
+                Save Order
+              </Button>
+            </Form.Item>
+          </Col>
+          <Col>
+            <Form.Item label=" " colon={false}>
+              <Button
+                type="primary"
+                htmlType="submit"
                 onClick={onClickCopyOrder}
+                loading={busy}
               >
                 <PrinterOutlined />
                 Print copy order
@@ -337,6 +426,12 @@ const NewOrderPage: React.FC = () => {
           </Col>
         </Row>
       </Form>
+      {orderInfo.id && (
+        <OrderFileViewWidget
+          orderInfo={orderInfo}
+          onUpdateOrderInfo={onUpdateOrderInfo}
+        />
+      )}
     </div>
   );
 };

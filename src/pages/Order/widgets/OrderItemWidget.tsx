@@ -4,6 +4,7 @@ import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
 import {
   apiDeleteOrderItem,
   apiGenerateItemId,
+  apiGetRecvItemList,
   apiGetSpecieList,
 } from "../../../services/orderService";
 import dayjs from "dayjs";
@@ -27,10 +28,13 @@ const OrderItemWidget: FC<PROPS> = ({
 }) => {
   // const [dataSource, setDataSource] = useState<IOrderItemInfo[]>([]);
   const [specieList, setSpecieList] = useState<string[]>([]);
-
+  const [recvItemList, setRecvItemList] = useState<string[]>([]);
   useEffect(() => {
     apiGetSpecieList().then((res) => {
       setSpecieList(res as string[]);
+    });
+    apiGetRecvItemList().then((res) => {
+      setRecvItemList(res as string[]);
     });
   }, []);
 
@@ -108,14 +112,28 @@ const OrderItemWidget: FC<PROPS> = ({
       dataIndex: "item_name",
       key: "item_name",
       render: (text: string, record: IOrderItemInfo) => (
-        <Input
-          onChange={(e) =>
-            handleSelectChange(record.id, "item_name", e.target.value)
-          }
+        <Select
           value={text}
-          placeholder="Enter items"
-        />
+          onChange={(value) => handleSelectChange(record.id, "item_name", value)}
+          className="w-full min-w-[150px]"
+          placeholder="Select Item"
+        >
+          {recvItemList.map((item) => (
+            <Option key={item} value={item}>
+              {item}
+            </Option>
+          ))}
+        </Select>
       ),
+      // render: (text: string, record: IOrderItemInfo) => (
+      //   <Input
+      //     onChange={(e) =>
+      //       handleSelectChange(record.id, "item_name", e.target.value)
+      //     }
+      //     value={text}
+      //     placeholder="Enter items"
+      //   />
+      // ),
     },
     {
       title: "Instruction",
@@ -140,9 +158,10 @@ const OrderItemWidget: FC<PROPS> = ({
           type="number"
           prefix={orderInfo.currency}
           required={true}
-          value={parseFloat(text)}
+          value={text}
+          
           onChange={(e) =>
-            handleSelectChange(record.id, "price", parseFloat(e.target.value))
+            handleSelectChange(record.id, "price", e.target.value)
           }
           className="w-full"
         />
